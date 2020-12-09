@@ -11,15 +11,22 @@ def login():
     user_p = password_entry.get()
     cur.execute('''SELECT user_id FROM user WHERE user_name=? ''', (user_id, ))
     id_tuple = cur.fetchone()
-    id = id_tuple[0]
+    try:
+        id = id_tuple[0]
+    except:
+        id = None
     cur.execute('''SELECT user_pass FROM user_pass WHERE pass_id=? ''', (id, ))
     auth_tuple = cur.fetchone()
-    auth = auth_tuple[0]
+    try:
+        auth = auth_tuple[0]
+    except:
+        auth = None
     if str(user_p) == str(auth):
         exit()
         return True
     else:
-        output.insert(END, 'incorrect user or pass\n')
+        output['text'] = 'Incorrect user or pass'
+        return False
 
 
 def registring():
@@ -110,7 +117,9 @@ while True:
     register_button = tkinter.Button(Login_sc, text='register', command=registring)
     register_button.grid(column=0, row=3)
 
-    output = Text(Login_sc, width=15, height=5, background='light grey')
+    output = tkinter.Label(Login_sc, text='')
     output.grid(column=1, row=4)
 
+    if login():
+        Start()
     Login_sc.mainloop()
